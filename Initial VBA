@@ -1,0 +1,47 @@
+Sub key_word_highlighting()
+
+Dim sh As Worksheet
+Dim cwCSV As Workbook
+Dim rw As Range, cl As Range
+Dim line As String
+Dim KeyWords
+Dim keyword As Variant
+
+Dim filePath As String
+
+'This needs to be the path to your CSV file
+filePath = "\\kclad.ds.kcl.ac.uk\anywhere\UserData\PSStore01\k1813158\Desktop\key_words (1).csv"
+
+Set sh = ActiveSheet
+
+Open filePath For Input As #1 ' Open file for input
+    Do While Not EOF(1) ' Loop until end of file
+        ImportToRow = ImportToRow + 1
+        Line Input #1, line
+        KeyWords = Split(line, ",") 'Split the line into the array.
+            For Each rw In sh.Rows
+                For Each cl In sh.Columns
+                        If sh.Cells(1, cl.Column).Value = "" Then
+                             Exit For
+                        End If
+                        For Each keyword In KeyWords
+                            Debug.Print (keyword)
+                            If LCase(sh.Cells(rw.Row, cl.Column).Value) = LCase(keyword) Then
+'                               This row is the colour to be used for the highlightin
+                                sh.Cells(rw.Row, cl.Column).EntireRow.Interior.ColorIndex = 35
+                            End If
+                        Next
+                Next cl
+
+                If sh.Cells(rw.Row, 1).Value = "" Then
+                     Exit For
+                End If
+            Next rw
+    Loop
+Close #1 ' Close file.
+
+'If you uncoment the line below and run it, it will remove all highlighting across the whole document
+'FYI you uncoment by deleting the leaving single quote
+'Cells.Interior.ColorIndex = 0
+
+End Sub
